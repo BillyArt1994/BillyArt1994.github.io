@@ -46,15 +46,25 @@
   };
 </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="��С��">
-<meta property="og:url" content="https://billyart1994.github.io/archives/2020/index.html">
+  <meta name="description" content="&amp;emsp;最近做了一个透明shader，但是要支持lightmap，然后就发现了一个有趣的现象，烘焙出来的阴影都是方块状态的并没有透明处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="透明+阴影+LightMap">
+<meta property="og:url" content="https://billyart1994.github.io/2020/05/04/LightMap/index.html">
 <meta property="og:site_name" content="��С��">
+<meta property="og:description" content="&amp;emsp;最近做了一个透明shader，但是要支持lightmap，然后就发现了一个有趣的现象，烘焙出来的阴影都是方块状态的并没有透明处理">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2020/05/04/9oYTyR5uQi3Pbzh.png">
+<meta property="og:image" content="https://i.loli.net/2020/05/04/nDpwQkHTbBAYhcq.png">
+<meta property="article:published_time" content="2020-05-04T04:11:02.000Z">
+<meta property="article:modified_time" content="2020-05-27T11:18:23.414Z">
 <meta property="article:author" content="BillyArt1994">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="lightmap">
+<meta property="article:tag" content="shader">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2020/05/04/9oYTyR5uQi3Pbzh.png">
 
-<link rel="canonical" href="https://billyart1994.github.io/archives/2020/">
+<link rel="canonical" href="https://billyart1994.github.io/2020/05/04/LightMap/">
 
 
 <script id="page-configurations">
@@ -62,11 +72,11 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: false
+    isPost: true
   };
 </script>
 
-  <title>归档 | ��С��</title>
+  <title>透明+阴影+LightMap | ��С��</title>
   
 
 
@@ -175,233 +185,154 @@
           <div class="content">
             
 
+  <div class="posts-expand">
+      
   
   
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://billyart1994.github.io/2020/05/04/LightMap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="BillyArt1994">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="��С��">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          透明+阴影+LightMap
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-04 12:11:02" itemprop="dateCreated datePublished" datetime="2020-05-04T12:11:02+08:00">2020-05-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-05-27 19:18:23" itemprop="dateModified" datetime="2020-05-27T19:18:23+08:00">2020-05-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/shader/" itemprop="url" rel="index">
+                    <span itemprop="name">shader</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
   
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <span class="collection-header">嗯..! 目前共计 10 篇日志。 继续努力。</span>
-      </div>
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/05/04/LightMap/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/05/04/LightMap/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <h1 class="collection-header">2020</h1>
-    </div>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-05-27T21:40:47+08:00"
-              content="2020-05-27">
-          05-27
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/2020/05/27/Maxscrip-%E5%88%9D%E8%AF%95/" itemprop="url">
-            <span itemprop="name">MaxScript-初试</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-05-04T12:11:02+08:00"
-              content="2020-05-04">
-          05-04
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/2020/05/04/LightMap/" itemprop="url">
-            <span itemprop="name">透明+阴影+LightMap</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-04-05T15:39:40+08:00"
-              content="2020-04-05">
-          04-05
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/2020/04/05/Untiy%E6%89%93%E4%B8%8D%E5%BC%80%E9%97%AA%E9%80%80%E5%9B%9EUnityhub/" itemprop="url">
-            <span itemprop="name">Untiy打不开闪退回Unityhub</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-04-04T21:13:57+08:00"
-              content="2020-04-04">
-          04-04
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/2020/04/04/Shader%E2%80%94%E2%80%94%E6%A8%A1%E6%9D%BF%E6%B5%8B%E8%AF%95/" itemprop="url">
-            <span itemprop="name">Shader—模板测试</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-04-01T10:41:48+08:00"
-              content="2020-04-01">
-          04-01
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/2020/04/01/Shader%E2%80%94%E2%80%94%E5%88%B6%E4%BD%9C%E5%BA%8F%E5%88%97%E5%B8%A7%E5%8A%A8%E7%94%BB/" itemprop="url">
-            <span itemprop="name">Shader—制作序列帧动画</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-03-16T11:42:06+08:00"
-              content="2020-03-16">
-          03-16
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/2020/03/16/Github%E6%8B%89%E5%8F%96%E5%A4%AA%E6%85%A2/" itemprop="url">
-            <span itemprop="name">Github拉取太慢</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-01-08T17:34:02+08:00"
-              content="2020-01-08">
-          01-08
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/2020/01/08/%E7%89%B9%E6%95%88/" itemprop="url">
-            <span itemprop="name">VFX_Tutorials</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-01-07T15:38:45+08:00"
-              content="2020-01-07">
-          01-07
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/2020/01/07/shader%E4%BC%98%E5%8C%96%E6%89%8B%E5%86%8C%EF%BC%88%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%EF%BC%89/" itemprop="url">
-            <span itemprop="name">shader优化笔记（持续更新）</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-01-07T14:06:30+08:00"
-              content="2020-01-07">
-          01-07
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/2020/01/07/shader%E4%B8%ADsin%E5%87%BD%E6%95%B0%E4%BC%98%E5%8C%96/" itemprop="url">
-            <span itemprop="name">shader中sin函数优化</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-01-04T12:05:44+08:00"
-              content="2020-01-04">
-          01-04
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/2020/01/04/Shader%E2%80%94%E6%A8%A1%E6%8B%9F%E5%85%89%E6%BA%90%E8%A7%92%E8%89%B2%E5%B1%95%E7%A4%BA%E6%B8%B2%E6%9F%93/" itemprop="url">
-            <span itemprop="name">Shader—模拟光源角色展示渲染</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
+        <p>&emsp;<strong>最近做了一个透明shader，但是要支持lightmap，然后就发现了一个有趣的现象，烘焙出来的阴影都是方块状态的并没有透明处理</strong></p>
+<a id="more"></a> 
+<p>最初烘焙状态，左边黑色闪电为官方shader，LegacyShader/Transparent/Coutout<br><img src="https://i.loli.net/2020/05/04/9oYTyR5uQi3Pbzh.png" alt="微信截图_20200504121943.png"><br>然后查到论坛中有说，是shader的名字问题= 0 =<br>真神奇，然后我试着把名字改了下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Shader <span class="string">&quot;Billy/TransparentCutout&quot;</span>  <span class="comment">// 原本是Billy/test</span></span><br><span class="line">&#123;</span><br><span class="line">	Properties</span><br><span class="line">	&#123;</span><br><span class="line">		_Color (<span class="string">&quot;Color&quot;</span>,Color) = (<span class="number">0.5</span>,<span class="number">0.5</span>,<span class="number">0.5</span>,<span class="number">1</span>)</span><br><span class="line">		_MainTex(<span class="string">&quot;MainTex&quot;</span>, <span class="number">2D</span>) = <span class="string">&quot;white&quot;</span> &#123;&#125;</span><br><span class="line">		_Cutoff (<span class="string">&quot;Cutoff&quot;</span>,Range(<span class="number">0</span>,<span class="number">1</span>)) =<span class="number">0.5</span></span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p> 没想到<img src="https://i.loli.net/2020/05/04/nDpwQkHTbBAYhcq.png" alt="1.png"><br> 说是lightmapper会去搜索”Transparent”去烘焙阴影</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p> 以上内容均来自本人观点以及网上资料,如果侵权，请联系删除，多谢观看。<br><font size=3>1. 官方论坛—<a target="_blank" rel="noopener" href="https://forum.unity.com/threads/alpha-cutout-lightmap-shadows.250269/">https://forum.unity.com/threads/alpha-cutout-lightmap-shadows.250269/</a></p>
 
     </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>如果有帮助到你的，可以给我买一杯咖啡打赏，交个朋友！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="BillyArt1994 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="BillyArt1994 支付宝">
+        <p>支付宝</p>
+      </div>
+
   </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Unity/" rel="tag"># Unity</a>
+              <a href="/tags/lightmap/" rel="tag"># lightmap</a>
+              <a href="/tags/shader/" rel="tag"># shader</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/05/Untiy%E6%89%93%E4%B8%8D%E5%BC%80%E9%97%AA%E9%80%80%E5%9B%9EUnityhub/" rel="prev" title="Untiy打不开闪退回Unityhub">
+      <i class="fa fa-chevron-left"></i> Untiy打不开闪退回Unityhub
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/27/Maxscrip-%E5%88%9D%E8%AF%95/" rel="next" title="MaxScript-初试">
+      MaxScript-初试 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
   
   
   
 
-  
-
+  </div>
 
 
           </div>
           
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -448,6 +379,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">1.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

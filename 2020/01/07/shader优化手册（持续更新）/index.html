@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://BillyArt1994.github.io').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":null},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="&amp;emsp;记录一些平常遇到和需要注意的优化点，转载出处及地址会写在最后。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="shader优化笔记（持续更新）">
+<meta property="og:url" content="https://billyart1994.github.io/2020/01/07/shader%E4%BC%98%E5%8C%96%E6%89%8B%E5%86%8C%EF%BC%88%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%EF%BC%89/index.html">
+<meta property="og:site_name" content="黄小明">
+<meta property="og:description" content="&amp;emsp;记录一些平常遇到和需要注意的优化点，转载出处及地址会写在最后。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2020/01/07/bmFMns4JywlVEe7.jpg">
+<meta property="article:published_time" content="2020-01-07T07:38:45.000Z">
+<meta property="article:modified_time" content="2020-11-23T02:17:49.244Z">
+<meta property="article:author" content="BillyArt1994">
+<meta property="article:tag" content="shader">
+<meta property="article:tag" content="优化">
+<meta property="article:tag" content="移动端">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2020/01/07/bmFMns4JywlVEe7.jpg">
+
+<link rel="canonical" href="https://billyart1994.github.io/2020/01/07/shader%E4%BC%98%E5%8C%96%E6%89%8B%E5%86%8C%EF%BC%88%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>shader优化笔记（持续更新） | 黄小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黄小明</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://billyart1994.github.io/2020/01/07/shader%E4%BC%98%E5%8C%96%E6%89%8B%E5%86%8C%EF%BC%88%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="BillyArt1994">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黄小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          shader优化笔记（持续更新）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-07 15:38:45" itemprop="dateCreated datePublished" datetime="2020-01-07T15:38:45+08:00">2020-01-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-23 10:17:49" itemprop="dateModified" datetime="2020-11-23T10:17:49+08:00">2020-11-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Shader/" itemprop="url" rel="index">
+                    <span itemprop="name">Shader</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/01/07/shader%E4%BC%98%E5%8C%96%E6%89%8B%E5%86%8C%EF%BC%88%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%EF%BC%89/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/01/07/shader%E4%BC%98%E5%8C%96%E6%89%8B%E5%86%8C%EF%BC%88%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%EF%BC%89/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>&emsp;<strong>记录一些平常遇到和需要注意的优化点，转载出处及地址会写在最后。</strong><br>    <a id="more"></a> </p>
+<h2 id="Gamma-与-Linear-指定"><a href="#Gamma-与-Linear-指定" class="headerlink" title="[Gamma]与[Linear]指定"></a><strong>[Gamma]与[Linear]指定</strong></h2><blockquote>
+<p>当颜色空间配制为Gamma时，对属性变量指定为[Gamma]和[Linear]都是无效的，只有当颜色空间配制为Linear时，指定才有效。所以当我们我们需要将一个Vector做为颜色使用，在Linear颜色空间下，指定其为[Linear]是比[Gamma]要高效的，因为如果指定为[Gamma]，Unity会在CPU端做一次转换计算。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Properties: [Gamma][Linear]</span><br><span class="line">[Linear]_myVector(<span class="string">&quot;display vector&quot;</span>,Vector)=<span class="number">0.5</span></span><br><span class="line">[Gamma]_myVector(<span class="string">&quot;display float&quot;</span>,Float)=<span class="number">0.5</span></span><br><span class="line"></span><br><span class="line">myColor(<span class="string">&quot;display color&quot;</span>,Color)=(<span class="number">0.5</span>,<span class="number">0.5</span>,<span class="number">0.5</span>,<span class="number">0.5</span>)</span><br><span class="line">颜色空间配制为Gamma时，[Gamma]与[Linear]指定无效</span><br><span class="line">颜色空间配制为Linear时，[Gamma]与[Linear]指定有效</span><br></pre></td></tr></table></figure>
+
+<h2 id="NoScaleOffset"><a href="#NoScaleOffset" class="headerlink" title="[NoScaleOffset]"></a><strong>[NoScaleOffset]</strong></h2><blockquote>
+<p>[NoScaleOffset]可以为我们省掉一个变量的分配，如果不需要用到纹理Tiling和Offset，请使用[NoScaleOffset]。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Properties: [NoScaleOffset]</span><br><span class="line">[NoScaleOffset]my2D(<span class="string">&quot;display 2d&quot;</span>,<span class="number">2</span>D) = <span class="string">&quot;white&quot;</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">sampler2D my2D;</span><br><span class="line">float4 my2D_ST;</span><br><span class="line">v2f vert (appdata v)</span><br><span class="line">&#123;</span><br><span class="line">      v2f o;</span><br><span class="line">      o.vertex = UnityObjectToClipPos(v.vertex);</span><br><span class="line">      o.uv = TRANSFORM_TEX(v.uv, my2D);</span><br><span class="line">      <span class="keyword">return</span> o;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="PerRendererDate"><a href="#PerRendererDate" class="headerlink" title="[PerRendererDate]"></a><strong>[PerRendererDate]</strong></h2><blockquote>
+<p>如果要为每个材质设不同的颜色，Unity会帮助你创建一百个这样的材质，相当于你渲染一百个物体，每个物体颜色不一样，所以直接设置的时候，会帮助你创建一百个材质，这对于GPU来讲会影响，但是更重要是内存方面，会有一百个材质的内存开销，这是一个最大的瓶颈。所以我们引入了PerRenderData的这么一个属性的控制，它可以帮你把这个数据。例如：Color颜色，我们不需要将其画到材质里面，而是通过Render可以设置。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Properties: [PerRendererDate]</span><br><span class="line"></span><br><span class="line">mayColor(<span class="string">&quot;display color&quot;</span>,Color)=(<span class="number">0.5</span>,<span class="number">0.5</span>,<span class="number">0.5</span>,<span class="number">0.5</span>)</span><br><span class="line">[PerRendererDate]mayColor(<span class="string">&quot;display color&quot;</span>,Color)=(<span class="number">0.5</span>,<span class="number">0.5</span>,<span class="number">0.5</span>,<span class="number">0.5</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="DisableBatching"><a href="#DisableBatching" class="headerlink" title="DisableBatching"></a><strong>DisableBatching</strong></h2><blockquote>
+<p>DisableBatching建议大家不要开启，默认的情况是不开启的。<br>如果顶点计算必须在object space下进行，则需要开启，否则尽量不要开启</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SubShader:Tags</span><br><span class="line">Tags&#123;<span class="string">&quot;DisableBatching&quot;</span>=<span class="string">&quot;True&quot;</span>|<span class="string">&quot;False&quot;</span>|<span class="string">&quot;LodFading&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="ForceNoShadowCasting"><a href="#ForceNoShadowCasting" class="headerlink" title="ForceNoShadowCasting"></a><strong>ForceNoShadowCasting</strong></h2><blockquote>
+<p>当我们画不透明的物体，需要替换半透明的物体，但是半透明的物体没有阴影，你可以更改Shader代码让它不投射阴影，直接加上ForceNoShadowCasting就可以了。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SubShader:Tags</span><br><span class="line">Tags&#123;<span class="string">&quot;ForceNoShadowCasting&quot;</span>=<span class="string">&quot;True&quot;</span>|<span class="string">&quot;False&quot;</span>&#125;</span><br><span class="line">替换shader时非常有用，如将不透明的物体变成半透明</span><br></pre></td></tr></table></figure>
+
+<h2 id="GrabPass"><a href="#GrabPass" class="headerlink" title="GrabPass"></a><strong>GrabPass</strong></h2><blockquote>
+<p>我们需要抓缓冲图有二种方式，如下图所示，这二种方式的区别是很明显的，第一种方式是比较低效的，因为GrabPass调用的时候必定会进行抓取的操作，所以没次都是不同的。但是下面比较高效，一帧里面最多只执行一次，就是第一次使用会执行，后面不会执行。这个根据大家的实际的应用进行选择。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">SubShader:GrabPass</span><br><span class="line">GrabPass</span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br><span class="line">sampler2D _GrabTexture;</span><br><span class="line"></span><br><span class="line">GrabPass</span><br><span class="line">&#123;</span><br><span class="line"><span class="string">&quot;_BackgroundTexture&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">sampler2D _BackgroundTexture;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Render-State"><a href="#Render-State" class="headerlink" title="Render State"></a><strong>Render State</strong></h2><blockquote>
+<p>图形程序可能会比较关注怎么设置渲染状态，当它有变化的时候我们需要设置，没有变化时候该怎么处理?<br>Unity引擎是这样处理的，它把渲染状态缓存，缓存的作用就是为了不要频繁的切换，因为会判断当前这个状态和上一次的状态是不是相同？如果是相同，不需要调用图形API的接口，因为接口调用也有一定的消耗。那么这里可以引出一个优化点，如果渲染状态频繁的切换，那么起不到优化的作用。<br>所以我们写Shader的时候，尽量不要让这些连续的，不要有太多的渲染状态，尽量保证是少的，这样优化作用是大的。例如：AAA连续和BBB连续画，这样的效率高于AB间插的渲染。<br><img src="https://i.loli.net/2020/01/07/bmFMns4JywlVEe7.jpg" alt="123.jpg"></p>
+</blockquote>
+<h2 id="Alpha-Testing"><a href="#Alpha-Testing" class="headerlink" title="Alpha Testing"></a><strong>Alpha Testing</strong></h2><blockquote>
+<p>限于硬件的机能限制，移动端尽量不要开启，在移动端开启，它的性能会比较低。</p>
+</blockquote>
+<h2 id="Color-Mask"><a href="#Color-Mask" class="headerlink" title="Color Mask"></a><strong>Color Mask</strong></h2><blockquote>
+<p>移动端也尽量不要开启，这是固定的，大家一定要记住，因现在受于移动端的限制，PC端没有这个限制。</p>
+</blockquote>
+<h2 id="Surface-Shader优化"><a href="#Surface-Shader优化" class="headerlink" title="Surface Shader优化"></a><strong>Surface Shader优化</strong></h2><blockquote>
+<ul>
+<li>首先是Approxview，它从View Direction Normalized移到Vertex Shader进行计算。</li>
+</ul>
+</blockquote>
+<ul>
+<li>其次是Halfasview，是使用光照方向和视角方向的中间向量替代一个视角方向，如果大家对比效果，觉得二种比较下来差不多，就可以选择优化过的效果。</li>
+<li>Noforwarddadd，如果只有一盏像素光，你可以开启这个选项。</li>
+<li>最后是环境光，我们可以关掉一个环境光，因为关了之后有一些优化的计算，这里优化强度比较大，但是光照损失也是比较大，如果觉得效果可以接受，就可以关掉它。</li>
+</ul>
+<h2 id="代码优化"><a href="#代码优化" class="headerlink" title="代码优化"></a><strong>代码优化</strong></h2><blockquote>
+<p>可优化的空间不大，空间大的地方在哪儿？我们思考优化这些最后的效果，思考这些数据是不是真的应该去进入了渲染管线？这是重点。<br>进入渲染管线的数据优化之后，我们再做Shader优化就是锦上添花的事情。首先我们CPU的软件裁减是不是高效且正确？当然我们会使用Unity的裁减功能，或者可以自己写。<br>当有Over Draw时，渲染顺序是不是可以再优化 。例如：远处的阴影是不是真的需要开启？分辨率可以再小一点吗，最后一个全屏特效做的次数，大家讲的Bloom次数非常多，可不可以减少一些？或者其它的全屏特效可不可以集中一次把它做完,这些事情我们思考之后已经优化了很多效率。</p>
+<ul>
+<li>我们要保证效果的前提下，尽量把计算放在Vertex Shader 。</li>
+<li>我们尽量不要写多Pass，SubShader。</li>
+<li>善用LOD，我们Mesh有LOD，纹理有Mipmap，Shader也有LOD。GPU执行二个Float的乘法和执行二个Vector4的乘法效率是一样的。</li>
+<li>少用分支， 还有一些内置函数，不建议自定义实现，我们可以使用提供的函数，那些是经过优化的。</li>
+<li>最后是精度问题，Fixed，Half、Float，不同的设备上它的性能不一样，我们尽量移动端使用一些低精度的数据。PC端这三种是没有什么区别的。</li>
+</ul>
+</blockquote>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p> 以上内容均来自本人观点以及网上资料,如果侵权，请联系删除，多谢观看。<br><font size=3>1. Unite 2018 大会技术专场 | Unity Shader着色器优化—<a target="_blank" rel="noopener" href="https://connect.unity.com/p/unity-shaderzhao-se-qi-you-hua?_ga=2.232505247.1413049713.1578380858-1230826648.1578380858">https://connect.unity.com/p/unity-shaderzhao-se-qi-you-hua?_ga=2.232505247.1413049713.1578380858-1230826648.1578380858</a></font></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>如果有帮助到你的，可以给我买一杯咖啡打赏，交个朋友！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="BillyArt1994 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="BillyArt1994 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/shader/" rel="tag"># shader</a>
+              <a href="/tags/%E4%BC%98%E5%8C%96/" rel="tag"># 优化</a>
+              <a href="/tags/%E7%A7%BB%E5%8A%A8%E7%AB%AF/" rel="tag"># 移动端</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/07/shader%E4%B8%ADsin%E5%87%BD%E6%95%B0%E4%BC%98%E5%8C%96/" rel="prev" title="shader中sin函数优化">
+      <i class="fa fa-chevron-left"></i> shader中sin函数优化
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/01/08/%E7%89%B9%E6%95%88/" rel="next" title="VFX_Tutorials">
+      VFX_Tutorials <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Gamma-%E4%B8%8E-Linear-%E6%8C%87%E5%AE%9A"><span class="nav-number">1.</span> <span class="nav-text">[Gamma]与[Linear]指定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NoScaleOffset"><span class="nav-number">2.</span> <span class="nav-text">[NoScaleOffset]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PerRendererDate"><span class="nav-number">3.</span> <span class="nav-text">[PerRendererDate]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DisableBatching"><span class="nav-number">4.</span> <span class="nav-text">DisableBatching</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ForceNoShadowCasting"><span class="nav-number">5.</span> <span class="nav-text">ForceNoShadowCasting</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GrabPass"><span class="nav-number">6.</span> <span class="nav-text">GrabPass</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Render-State"><span class="nav-number">7.</span> <span class="nav-text">Render State</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Alpha-Testing"><span class="nav-number">8.</span> <span class="nav-text">Alpha Testing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Color-Mask"><span class="nav-number">9.</span> <span class="nav-text">Color Mask</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Surface-Shader%E4%BC%98%E5%8C%96"><span class="nav-number">10.</span> <span class="nav-text">Surface Shader优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96"><span class="nav-number">11.</span> <span class="nav-text">代码优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">12.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="BillyArt1994"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">BillyArt1994</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/BillyArt1994" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;BillyArt1994" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/BillyArt1994" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;BillyArt1994" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://www.zhihu.com/people/huang-zhen-82-79" title="知乎 → http:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;huang-zhen-82-79" rel="noopener" target="_blank"><i class="fa fa-fw fa-book"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">BillyArt1994</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">黄小明</a> 强力驱动 v5.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://gemini.theme-next.org/" class="theme-link" rel="noopener" target="_blank">魔法师联盟</a> v7.7.0
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'qaoHrh1cH7EzC3KCkrRL1mac-gzGzoHsz',
+      appKey: 'yW2gk8bopNyooNI8cysWWwPn',
+      placeholder: "ヾﾉ≧∀≦)o 来呀！快活呀！~",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '6' || 10,
+      visitor: false,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: false,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

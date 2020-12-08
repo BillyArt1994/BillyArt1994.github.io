@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://BillyArt1994.github.io').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":null},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="&amp;emsp;在学习编程过程中总会碰到一些术语，“二进制”，“16位整数”，“32位整数”之类的，所以了解一下计算机的进位制。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="进位制学习">
+<meta property="og:url" content="https://billyart1994.github.io/2020/11/05/%E8%BF%9B%E5%88%B6/index.html">
+<meta property="og:site_name" content="黄小明">
+<meta property="og:description" content="&amp;emsp;在学习编程过程中总会碰到一些术语，“二进制”，“16位整数”，“32位整数”之类的，所以了解一下计算机的进位制。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2020/11/09/uTyJsFMB1Y6EIfW.png">
+<meta property="article:published_time" content="2020-11-05T12:25:33.000Z">
+<meta property="article:modified_time" content="2020-11-23T02:17:49.244Z">
+<meta property="article:author" content="BillyArt1994">
+<meta property="article:tag" content="开发">
+<meta property="article:tag" content="计算机">
+<meta property="article:tag" content="二进制">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2020/11/09/uTyJsFMB1Y6EIfW.png">
+
+<link rel="canonical" href="https://billyart1994.github.io/2020/11/05/%E8%BF%9B%E5%88%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>进位制学习 | 黄小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黄小明</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://billyart1994.github.io/2020/11/05/%E8%BF%9B%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="BillyArt1994">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黄小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          进位制学习
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-11-05 20:25:33" itemprop="dateCreated datePublished" datetime="2020-11-05T20:25:33+08:00">2020-11-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-23 10:17:49" itemprop="dateModified" datetime="2020-11-23T10:17:49+08:00">2020-11-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Develop/" itemprop="url" rel="index">
+                    <span itemprop="name">Develop</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/11/05/%E8%BF%9B%E5%88%B6/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/11/05/%E8%BF%9B%E5%88%B6/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>&emsp;<strong>在学习编程过程中总会碰到一些术语，“二进制”，“16位整数”，“32位整数”之类的，所以了解一下计算机的进位制。</strong><br> <a id="more"></a> </p>
+<h2 id="什么是进位制"><a href="#什么是进位制" class="headerlink" title="什么是进位制"></a>什么是进位制</h2><p>进制也就是进位计数制是一种记数方式，利用这种记数法，可以使用有限种数字符号来表示所有的数值。一种进位制中可以使用的数字符号的数目称为这种进位制的基数或底数。若一个进位制的基数为<strong>X</strong>，既可以称之为<strong>X进制</strong>，对于任何一种<strong>X进制</strong>，就表示每一位置上的数运算时都是逢<strong>X</strong>进一位。 二进制就是逢二进一，十进制是逢十进一，十六进制是逢十六进一，以此类推。</p>
+<ul>
+<li>二进制<blockquote>
+<p>逢二进一，数字中只有 0 和 1，二进制的数法是：0，1 接着 10，11 接着 100，101，110，111 接着 1000,1001 … 1111 以此类推。</p>
+</blockquote>
+</li>
+<li>八进制<blockquote>
+<p>逢八进一，数字中含有0，1，2，3，4，5，6，7，接着10….17….27以此类推。</p>
+</blockquote>
+</li>
+<li>十进制<blockquote>
+<p>逢十进一，数字中含有 0，1，2，3，4，5，6，7，8，9<br>数法很简单，就是平常生活中使用的，从1，2，3，4，5，6，7，8，9的时候进一位10，接着11，12，13，14….</p>
+</blockquote>
+</li>
+<li>十六进制<blockquote>
+<p>逢十六进一，表示形式比较特殊，因为10~15不能用数字来展示，不然就乱套了。所以强制规定如下</p>
+</blockquote>
+10 用 A 表示、11 用 B 表示、12 用 C 表示、13 用 D 表示、14 用 F 表示。<blockquote>
+</blockquote>
+那么数数的数法也同理，从 0 ~ F 接着 10 … 1F … FF 接着 100 …… FFF 以此类推。</li>
+</ul>
+<h2 id="向十进制转换"><a href="#向十进制转换" class="headerlink" title="向十进制转换"></a>向十进制转换</h2><p>二进制、八进制和十六进制向十进制转换都非常容易，就是“按权相加”，所谓“权”，也即“位权”。<br>假设当前数字为N进制，那么：<br>对于整数部分，从右向左看，第<strong>i</strong>位的位权等于<strong>N<sup>i-1</sup></strong><br>对于小数部分，恰好相反，要从左往右看，第<strong>i</strong>位的位权等于<strong>N<sup>i</sup></strong><br>之后拿每个位的值乘上相应权位再相加就得到十进制的值了</p>
+<ul>
+<li>整数部分<br>例如，将<strong>八进制</strong>的数字<strong>53262</strong>转换成<strong>十进制</strong>：<br>53262&gt;&gt;&gt;2x8<sup>0</sup>+6x8<sup>1</sup>+2x8<sup>2</sup>+3x8<sup>3</sup>+5x8<sup>4</sup>=22194 </li>
+</ul>
+<p>从右往左看第一位的位权为8<sup>0</sup>=1，第二位的权位为8<sup>1</sup>=8,第三位的权位8<sup>2</sup>=64，第四位的权位8<sup>3</sup>=512，第五位的权位8<sup>4</sup>=4096，然后将个各位的数字与位权相乘之后再相加，就等到了十进制的值。  </p>
+<ul>
+<li>小数部分<br>例如，将<strong>八进制</strong>的数字<strong>520.1314</strong>转换成<strong>十进制</strong>：  </li>
+</ul>
+<p>520.1314&gt;&gt;&gt;0x8<sup>0</sup>+2x8<sup>1</sup>+5x8<sup>2</sup>+1x8<sup>-1</sup>+3x8<sup>-2</sup>+1x8<sup>-3</sup>+4x8<sup>-4</sup>=336.1748046875 </p>
+<p>先看整数部分从右往左，第一位的位权0x8<sup>0</sup>=1，第二位的位权2x8<sup>1</sup>=16，第三位5x8<sup>2</sup>=320，接下来看小数部分从左向右计算，第一位1x8<sup>-1</sup>=0.125，第二位3x8<sup>-2</sup>=0.046875，第三位1x8<sup>-3</sup>=0.001953125，第四位4x8<sup>-4</sup>=0.0009765625，然后把得到的值全部相加起来，就等到了十进制的值。</p>
+<h2 id="向二进制-八进制或者十六进制转换"><a href="#向二进制-八进制或者十六进制转换" class="headerlink" title="向二进制,八进制或者十六进制转换"></a>向二进制,八进制或者十六进制转换</h2><p>假设当前数字为N进制，那么：<br>十进制整数转换为 N 进制整数采用<strong>“除 N 取余，逆序排列”</strong>法。具体做法是：<br>将 N 作为除数，用十进制整数除以 N，可以得到一个商和余数；<br>保留余数，用商继续除以 N，又得到一个新的商和余数；<br>仍然保留余数，用商继续除以 N，还会得到一个新的商和余数；<br>……<br>如此反复进行，每次都保留余数，用商接着除以 N，直到商为 0 时为止。<br>之后把每一次得到的余数倒序排列就得到了，N进制的数字了。</p>
+<ul>
+<li>整数部分<br>例如，将<strong>十进制</strong>的数字<strong>1994</strong>转换成<strong>八进制</strong>：<br>先用1994÷8=31…1,继续31÷8=3…7,最后3÷8=0…3商为0时结束。<br>把数字倒序排列起来得到<strong>八进制值3712</strong>。</li>
+<li>小数部分<br>例如，将<strong>十进制</strong>的数字，<strong>0.930908203125</strong>转换成<strong>八进制</strong>：<br>先用0.930908203125x8=7.447265625,然后0.447265625x8=3.578125,继续0.578125x8=4.625，最后0.625x8=5.0，小数部分为0结束。<br>把所有积的整数部分按顺序排列就得到<strong>八进制值0.7345</strong>。</li>
+<li>如果又有整数又有小数  </li>
+</ul>
+<p><strong>将整数部分</strong>和<strong>小数部分</strong>分开分别按照上面的运算方法转换后，合并起来即可。例如：<br>十进制数字36926.930908203125转换成八进制的结果为 110076.7345；<br>十进制数字 42.6875 转换成二进制的结果为 101010.1011。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>进位制在很多地方都有体现，比如：PS中RGB值下方有一个#xxxxxx的代码，其实这个就是通过进位制把十进制的RGB值转换成十六进制的数值。例图中R：233  G：80  B：80，分别转换成十六进制，可以得到R：e9 G：50 B：50，合并在一起就是e95050。<br><img src="https://i.loli.net/2020/11/09/uTyJsFMB1Y6EIfW.png" alt="WX20201109-232248@2x.png"></p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p> 以上内容均来自本人观点以及网上资料,如果侵权，请联系删除，多谢观看。<br> 1.<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/65554778">进制转换：二进制、八进制、十进制、十六进制相互转换</a><br> 2.<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1nW411a7sx?from=search&seid=313826950672436430">二进制、八进制、十六进制之间转换方法</a>  </p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>如果有帮助到你的，可以给我买一杯咖啡打赏，交个朋友！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="BillyArt1994 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="BillyArt1994 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%BC%80%E5%8F%91/" rel="tag"># 开发</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag"># 计算机</a>
+              <a href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/" rel="tag"># 二进制</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/28/Kajiya-Kay%E5%A4%B4%E5%8F%91%E6%B8%B2%E6%9F%93/" rel="prev" title="Kajiya-Kay头发渲染">
+      <i class="fa fa-chevron-left"></i> Kajiya-Kay头发渲染
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/11/16/MaxScript-Normal%E6%98%A0%E5%B0%84%E6%8F%92%E4%BB%B6/" rel="next" title="MaxScript-法线传输">
+      MaxScript-法线传输 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%BF%9B%E4%BD%8D%E5%88%B6"><span class="nav-number">1.</span> <span class="nav-text">什么是进位制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%91%E5%8D%81%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2"><span class="nav-number">2.</span> <span class="nav-text">向十进制转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%91%E4%BA%8C%E8%BF%9B%E5%88%B6-%E5%85%AB%E8%BF%9B%E5%88%B6%E6%88%96%E8%80%85%E5%8D%81%E5%85%AD%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2"><span class="nav-number">3.</span> <span class="nav-text">向二进制,八进制或者十六进制转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="BillyArt1994"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">BillyArt1994</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/BillyArt1994" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;BillyArt1994" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/BillyArt1994" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;BillyArt1994" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://www.zhihu.com/people/huang-zhen-82-79" title="知乎 → http:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;huang-zhen-82-79" rel="noopener" target="_blank"><i class="fa fa-fw fa-book"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">BillyArt1994</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">黄小明</a> 强力驱动 v5.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://gemini.theme-next.org/" class="theme-link" rel="noopener" target="_blank">魔法师联盟</a> v7.7.0
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'qaoHrh1cH7EzC3KCkrRL1mac-gzGzoHsz',
+      appKey: 'yW2gk8bopNyooNI8cysWWwPn',
+      placeholder: "ヾﾉ≧∀≦)o 来呀！快活呀！~",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '6' || 10,
+      visitor: false,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: false,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
